@@ -1,0 +1,42 @@
+server:
+  port: 8181
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    discovery:
+      enabled: true
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/users/**
+              filters:
+                - AuthenticationFilter
+            - id: user-service-auth
+              uri: lb://user-service
+              predicates:
+                - Path=/auth/**
+springdoc:
+  swagger-ui:
+    urls:
+      - name: Api Gateway Service
+        url: /v3/api-docs
+      - name: User Service
+        url: /users/v3/api-docs
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-urls:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+
+jwt:
+  secret: gL5zP9qD7xB1fAeV6mT8rQ2vYhX4uCnMZwEkJpHtLbFyQsMj
+
+
